@@ -1,4 +1,5 @@
 <?php
+
 function p($var)
 {
     if (is_bool($var)){
@@ -40,15 +41,17 @@ function post($name, $default=false, $filter=false)
 /**
  * 跳转函数
  */
-function redirect($url){
-    header($url);
+function redirect($url)
+{
+    header("Location: http://www.example.com/");
 }
 /**
- * http://hostname//MiFrame/index.php/index/index
+ * 拿到base_url();
  */
 function baseUrl()
 {
-    return 'http://'.$_SERVER['HTTP_HOST'];
+    //http://www.case.com//MiFrame/index.php/index/index
+    return $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'];
 }
 
 /**
@@ -62,19 +65,25 @@ function siteUrl($str=null)
         throw new \Exception('siteUrl中参数不能为空');
     }
     $arr = explode('/', $str);
-    return baseUrl().$_SERVER['SCRIPT_NAME'].'/'.$arr[0].'/'.$arr[1];
+    $params = '';
+    foreach ($arr as $key => $val) {
+        $params .= '/'.$val;
+    }
+    return baseUrl().$_SERVER['SCRIPT_NAME'].$params.'/';
 }
 
 /**
- * http://hostname//MiFrame/public/
+ * 拿到public的url
  */
 function getAsset()
 {
-    return baseUrl().'/'.getProjectName().'/public';
+    $assetUrl = baseUrl().$_SERVER['SCRIPT_NAME'];
+    $index = strrpos($assetUrl, '/');
+    return substr($assetUrl, 0, $index).'/public';
 }
 
 /**
- * return MIFrame
+ * 拿到项目名称
  */
 function getProjectName()
 {
